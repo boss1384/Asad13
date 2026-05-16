@@ -1,0 +1,145 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+/* =========================
+   BODY
+========================= */
+body{
+    background:#0b0f14;
+    color:#ffffff;
+}
+
+/* =========================
+   HEADER
+========================= */
+header{
+    padding:14px;
+    text-align:center;
+    font-size:16px;
+    font-weight:bold;
+    background:#111827;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+    letter-spacing:1px;
+}
+
+/* =========================
+   MAP AREA
+========================= */
+#map{
+    height:60vh;
+    width:100%;
+    border-bottom:2px solid rgba(255,255,255,0.08);
+}
+
+/* =========================
+   MAIN PANEL
+========================= */
+.panel{
+    padding:14px;
+}
+
+/* =========================
+   CARDS
+========================= */
+.card{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    padding:14px;
+    border-radius:14px;
+    margin-top:12px;
+    backdrop-filter:blur(10px);
+    box-shadow:0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* =========================
+   TRUCK INFO TEXT
+========================= */
+#info{
+    color:#00ffd5;
+    line-height:1.6;
+    font-size:14px;
+}
+
+/* =========================
+   ALERT BOX
+========================= */
+.alert{
+    padding:10px;
+    margin-top:8px;
+    border-radius:10px;
+    font-size:13px;
+    animation:fadeIn 0.3s ease-in-out;
+}
+
+/* ALERT TYPES */
+.red{
+    background:#7f1d1d;
+    border-left:4px solid #ef4444;
+}
+
+.yellow{
+    background:#78350f;
+    border-left:4px solid #facc15;
+}
+
+/* =========================
+   BUTTONS (IF YOU ADD LATER)
+========================= */
+button{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s ease;
+}
+
+button:hover{
+    transform:scale(1.02);
+    opacity:0.9;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-5px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+@media(max-width:600px){
+
+    header{
+        font-size:14px;
+    }
+
+    #map{
+        height:55vh;
+    }
+
+    .card{
+        padding:12px;
+    }
+
+    #info{
+        font-size:13px;
+    }
+}
