@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ASAD CONCERT - FULL FLEET SYSTEM</title>
+
+<!-- LEAFLET MAP -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<!-- ROUTING ENGINE -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"/>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0b0f14;
+    color:white;
+}
+
+header{
+    padding:12px;
+    text-align:center;
+    background:#111827;
+    font-weight:bold;
+}
+
+/* MAP */
+#map{
+    height:60vh;
+    width:100%;
+}
+
+/* PANEL */
+.panel{
+    padding:12px;
+}
+
+/* CARD */
+.card{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    padding:12px;
+    border-radius:12px;
+    margin-top:10px;
+}
+
+/* ALERTS */
+.alert{
+    padding:8px;
+    margin-top:6px;
+    border-radius:8px;
+}
+
+.red{background:#7f1d1d;}
+.yellow{background:#78350f;}
+
+#info{
+    color:#00ffd5;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+    border:none;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>🚚 ASAD CONCERT - FULL LIVE FLEET SYSTEM</header>
+
+<div id="map"></div>
+
+<div class="panel">
+
+<div class="card">
+<h3>Truck Info</h3>
+<p id="info">Click a truck</p>
+</div>
+
+<div class="card">
+<h3>Alerts</h3>
+<div id="alerts">No alerts</div>
+</div>
+
+</div>
+
+<script>
+
+// ================= MAP =================
+const map = L.map('map').setView([9.0820,8.6753],6);
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+).addTo(map);
+
+// ================= ICON =================
+const greenIcon = new L.Icon({
+    iconUrl:'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
+    iconSize:[32,32]
+});
+
+// ================= CITIES =================
+let cities = [
+["Lagos",6.5244,3.3792],
+["Abuja",9.0765,7.3986],
+["Kano",12.0022,8.5920],
+["Kaduna",10.5105,7.4165],
+["Ibadan",7.3775,3.9470]
+];
+
+// ================= DATA =================
+let trucks = [];
+let markers = [];
+let routes = {};
+let routeIndex = {};
+
+// ================= TRUCKS (10–50) =================
+let total = 20;
+
+for(let i=1;i<=total;i++){
+
+let from = cities[Math.floor(Math.random()*cities.length)];
+let to = cities[Math.floor(Math.random()*cities.length)];
+
+let id = "MXT-" + String(i).padStart(3,"0");
+
+trucks.push({
+id:id,
+from:from,
+to:to,
+lat:from[1],
+lng:from[2],
+speed:0,
+moving:true
+});
+
+routes[id] = [];
+routeIndex[id] = 0;
+
+}
+
+// ================= ALERT =================
+function alert(msg,type){
+document.getElementById("alerts").innerHTML =
+`<div class="alert ${type}">${msg}</div>` +
+document.getElementById("alerts").innerHTML;
+}
+
+// ================= CREATE ROUTES =================
+trucks.forEach((t,i)=>{
+
+let marker = L.marker([t.lat,t.lng],{icon:greenIcon}).addTo(map);
+
+markers.push(marker);
+
+// ROUTE BUILDER
+L.Routing.control({
+waypoints:[
+L.latLng(t.from[1],t.from[2]),
+L.latLng(t.to[1],t.to[2])
+],
+addWaypoints:false,
+createMarker:()=>null
+}).on("routesfound",function(e){
+
+routes[t.id] = e.routes[0].coordinates;
+
+}).addTo(map);
+
+// CLICK INFO
+marker.on("click",()=>{
+
+document.getElementById("info").innerHTML=`
+🚛 <b>${t.id}</b><br><br>
+
+📍 FROM: ${t.from[0]}<br>
+🎯 TO: ${t.to[0]}<br><br>
+
+🌍 LOCATION:<br>
+${t.lat.toFixed(4)}, ${t.lng.toFixed(4)}<br><br>
+
+🚀 SPEED: ${t.speed.toFixed(2)} km/h<br>
+
+${t.moving ? "🟢 Moving" : "🔴 Stopped"}
+`;
+
+});
+
+});
+
+// ================= MOVE SYSTEM =================
+function move(){
+
+trucks.forEach((t,i)=>{
+
+let path = routes[t.id];
+
+if(!path) return;
+
+let index = routeIndex[t.id];
+
+if(index < path.length){
+
+let pos = path[index];
+
+t.lat = pos.lat;
+t.lng = pos.lng;
+
+markers[i].setLatLng([t.lat,t.lng]);
+
+routeIndex[t.id]++;
+
+t.speed = Math.random()*80;
+
+if(t.speed > 80){
+alert("⚡ SPEED ALERT: " + t.id,"yellow");
+}
+
+}else{
+t.moving = false;
+}
+
+});
+
+}
+
+// ================= LOOP =================
+setInterval(move,500);
+
+</script>
+
+</body>
+</html>
